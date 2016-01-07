@@ -4,18 +4,18 @@
 #include "bitFile.h"
 #include "huffTree.h"
 
-// Ecrit l'arbre hTree dans le fichier obf de la façon décrite dans
-// l'énoncé du projet Huffman
-// Précondition: hTree est non vide
-//               Le fichier doit être prêt à être écrit bit par bit
-//               tel qu'après un appel de initBitFile
+// Ecrit l'arbre hTree dans le fichier obf de la faï¿½on dï¿½crite dans
+// l'ï¿½noncï¿½ du projet Huffman
+// Prï¿½condition: hTree est non vide
+//               Le fichier doit ï¿½tre prï¿½t ï¿½ ï¿½tre ï¿½crit bit par bit
+//               tel qu'aprï¿½s un appel de initBitFile
 void putTreeToFile(HuffTree hTree, oBitFile & obf);
 
-bool constructNode(HuffTree &hf,iBitFile &ibf);
-void constructTree(HuffTree &hf,iBitFile &ibf);
+bool constructNode(HuffTree& hf,iBitFile &ibf);
+void constructTree(HuffTree hf,iBitFile &ibf);
 
-// Retourne: l'arbre lu dans le fichier ibf (cf. énoncé projet Huffman).
-// Précondition: Le fichier doit être prêt à lire bit par bit tel qu'après
+// Retourne: l'arbre lu dans le fichier ibf (cf. ï¿½noncï¿½ projet Huffman).
+// Prï¿½condition: Le fichier doit ï¿½tre prï¿½t ï¿½ lire bit par bit tel qu'aprï¿½s
 //               un appel de initBitFile
 HuffTree getTreeFromFile(iBitFile & ibf);
 

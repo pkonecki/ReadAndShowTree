@@ -24,7 +24,7 @@ HuffTree leaf(Byte data) {
   return ht;
 }
 
-// L'arbre de l'énoncé construit à la main
+// L'arbre de l'ï¿½noncï¿½ construit ï¿½ la main
 HuffTree mkSimpleTree() {
   return inNode(leaf('A'), inNode(leaf('B'),
            inNode(inNode(inNode(

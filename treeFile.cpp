@@ -1,6 +1,8 @@
 #include "huffTree.h"
 #include "treeFile.h"
 
+#include <iostream>
+
 void putTreeToFile(HuffTree hTree, oBitFile & obf) {
   if(isLeaf(hTree)) {
     putBit(obf, 0);
@@ -12,32 +14,67 @@ void putTreeToFile(HuffTree hTree, oBitFile & obf) {
     putTreeToFile(hTree->right, obf);
   }
 }
-bool constructNode(HuffTree &hf,iBitFile &ibf){
+bool constructNode(HuffTree& hf,iBitFile &ibf){
+  if(hf != nullptr)
+    std::cout << "ERREUR DEVRAIT ETRE NULL" <<std::endl;
   if(getBit(ibf)==0){
+    std::cout << "newLeaf" <<std::endl;
     hf=newLeaf();
     hf->data=get8Bits(ibf);//en espérant que ce soit dans le bon ordre
     return false;
   }
   else{
-    hf=new HuffNode;//default value pointer?
+    std::cout << "newNode empty" << std::endl;
+    hf=new HuffNode();//default value pointer?
+    hf->data = 0;
     hf->left=nullptr;
     hf->right=nullptr;
     return true;
   }
     //else//si je mets pas de ifgetbit je suis pas sûr que le getbit avance
 }
-void constructTree(HuffTree &hf,iBitFile &ibf){//le considère comme une procédure
+void constructTree(HuffTree hf,iBitFile &ibf){//le considère comme une procédure
   //on détecte si y a quelque chose qui suit car ça veut dire qu'on s'est déjà occupé de ce qu'il y avait après
+  
+  if(not ibf.inputfile.good())
+    return;
   if(hf==nullptr)
-    hf=(constructNode(hf,ibf))?hf:hf;
-  else if(hf->left!=nullptr)//va à droite//isLeaf?
-    //on construit le node suivant
-    hf=(constructNode(hf->right,ibf))?hf:hf->right;
-  else//si à gauche c'est vide
-    hf=(constructNode(hf->left,ibf))?hf:hf->left;
+    constructNode(hf,ibf);
+  std::cout << "iteration " << hf << " gauche " << hf->left << " droite "<< hf->right << std::endl;
+  //not leaf on doit remplir left et right
+  if (isLeaf(hf))
+  {  
+    std::cout << "ISLEAF RETURN" << std::endl;
+    return;
+  }
+  bool leftIsTree = constructNode(hf->left,ibf);
+  std::cout << "construct gauche " << hf << " gauche " << hf->left << " droite "<< hf->right << std::endl;
+  //std::cin.get();
+  if (leftIsTree)
+    constructTree(hf->left,ibf);
+  bool rightIsTree = constructNode(hf->right,ibf);
+  std::cout << "construct droite " << hf << " gauche " << hf->left << " droite "<< hf->right << std::endl;
+  //std::cin.get();
+  if (rightIsTree)
+    constructTree(hf->right,ibf);
+//   if(hf->left==nullptr)
+//   {  
+//     std::cout << "left" <<std::endl;
+//     bool isNotLeaf = constructNode(hf->left,ibf);
+//     if (isNotLeaf)
+//       constructTree(hf->left,ibf);
+//   }
+//     if(hf->right==nullptr)//va à droite//isLeaf?
+//   {
+//     std::cout << "right" <<std::endl;
+//     //on construit le node suivant
+//     bool isNotLeaf = constructNode(hf->right,ibf);
+//     if (isNotLeaf)
+//       constructTree(hf->right,ibf);
+//   }  
   //on appelle de nouveau al fonction pour avancer du pas qu'on vient de créer si c'est un 1
-  if(ibf.inputfile.good())
-    constructTree(hf,ibf);
+
+    
   //je ne sais pas comment terminer la fonction pour que la récursivité s'arrête?
 }
 HuffTree getTreeFromFile(iBitFile & ibf){
@@ -45,6 +82,7 @@ HuffTree getTreeFromFile(iBitFile & ibf){
     HuffTree hf=nullptr;
     if(ibf.inputfile.good())
         constructTree(hf,ibf);
+    std::cout << "FINI" << hf << std::endl;
     return hf;
 /*
     if(ibf.inputfile.good())
