@@ -46,8 +46,10 @@ void putBit(oBitFile & obf, Byte bit);
 void flushBits(oBitFile & obf);
 
 // Ferme le fichier
+void pushBuffi(iBitFile &ibf);
 void closeFile(iBitFile & ibf);
 void closeFile(oBitFile & obf);
+Byte transByteToBit(int &cpt,Byte data);
 void put8Bits(oBitFile & obf, Byte data);
 Byte get8Bits(iBitFile &ibf);
 #endif

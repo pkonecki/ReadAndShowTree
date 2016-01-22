@@ -4,8 +4,7 @@ using namespace std;
 
 HuffTree newLeaf() {
   // A COMPLETER
-  //HuffNode sup;
-  HuffTree ht= new HuffNode();
+  HuffTree ht=new HuffNode();
   ht->data=0;
   ht->left=nullptr;
   ht->right=nullptr;
@@ -14,7 +13,7 @@ HuffTree newLeaf() {
 
 bool isLeaf(HuffTree ht) {
   // A COMPLETER
-  return ht->data != 0;
+  return ht->left==nullptr && ht->right==nullptr;
 }
 
 void showTree(HuffTree ht) {

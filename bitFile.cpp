@@ -1,6 +1,6 @@
 #include "bitFile.h"
 #include <iostream>
-
+#include <cmath>
 using namespace std;
 
 void initBitFile(iBitFile & ibf, const string & filename) {
@@ -9,10 +9,12 @@ void initBitFile(iBitFile & ibf, const string & filename) {
   ibf.nb=0;
   ibf.inputfile.open(filename,ifstream::binary);
 }
+
 void pushBuffi(iBitFile &ibf){
     ibf.buffi=ibf.inputfile.get();// le get sait où il en est, c'est comme un itérateur
     ibf.nb=8;
 }
+
 Byte transBit(iBitFile &ibf){
     char unsigned c;
     c=1<<(ibf.nb-1);//mets à 1 et fais circuler d'un certain nombre de positions
@@ -20,6 +22,7 @@ Byte transBit(iBitFile &ibf){
     --ibf.nb;
     return c!=0?1:0;
 }
+
 Byte getBit(iBitFile & ibf) {
   // A COMPLETER
   if(ibf.nb==0){
@@ -34,12 +37,14 @@ void initBitFile(oBitFile & obf, const string & filename) {
   obf.nb=8;
   obf.outputfile.open(filename,ofstream::binary);
 }
+
 void putInBuffo(oBitFile &obf, Byte bit){//dans le code principal :unsigned bit = getBit(ibf);
     //comment faire pourle remettre à 1 ou 0 si il ne correspond pas à 1 ou 0
     bit=bit<<(obf.nb-1);
     obf.buffo|=bit;
     --obf.nb;
 }
+
 void putBit(oBitFile & obf, Byte bit) {
   // A COMPLETER
   putInBuffo(obf,bit);
@@ -67,9 +72,29 @@ void closeFile(oBitFile & obf) {
   obf.outputfile.close();
 }
 
-void put8Bits(oBitFile & obf, Byte data){
-  for(int i=0;i<8;++i)
-    putBit(obf,data);
+Byte transByteToBit(int &cpt,Byte data){
+    Byte bit=1;
+    bit=bit <<(cpt);
+    bit&=data;
+    return bit;
+}
+
+void put8Bits(oBitFile & obf, Byte data)
+{
+ if ((obf.nb < 1) || (obf.nb > 7))
+ {
+  obf.buffo|=data;
+  obf.nb=0;
+  obf.outputfile.put(obf.buffo);
+  obf.buffo=0;
+  obf.nb=8;
+ }
+ else
+ {
+  obf.buffo|= data >> (8 - obf.nb);
+  obf.outputfile.put(obf.buffo);
+  obf.buffo = data << obf.nb;
+ }
 }
 
 Byte get8Bits(iBitFile &ibf){
